@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blood Effect</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #111;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #f00;
+      background: #111;
+      padding: 15px 24px;
+      border-radius: 20px;
+      font-size: 1.5em;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      transition: 0.5s;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .btn:hover .text {
+      color: #fff;
+      letter-spacing: 0.3em;
+      background: transparent;
+    }
+
+    .box {
+      position: relative;
+      width: 210px;
+      height: 58px;
+      background: #f00;
+      border-radius: 10px;
+      transition: 0.5s;
+      filter: url(#gooey);
+    }
+
+    .box span {
+      position: absolute;
+      color: #fff;
+      font-size: 1.5em;
+      text-transform: uppercase;
+      transition: 0.5s;
+      letter-spacing: 0.2em;
+      background: transparent;
+      padding: 15px 24px;
+      border-radius: 20px;
+      z-index: 1;
+    }
+
+    .box:hover span {
+      color: #fff;
+      letter-spacing: 0.3em;
+    }
+
+    .particle {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #f00;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: animate 2s linear forwards;
+    }
+
+    @keyframes animate {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(var(--dx), var(--dy)) scale(0.5);
+      }
+    }
+
+    svg {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#" class="btn">
+    <div class="box" id="box"></div>
+    <span class="text">Bleeding</span>
+  </a>
+
+  <svg>
+    <filter id="gooey">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="
+              1 0 0 0 0  
+              0 1 0 0 0  
+              0 0 1 0 0  
+              0 0 0 50 -10" result="gooey" />
+      <feComposite in="SourceGraphic" in2="gooey" operator="atop" />
+    </filter>
+  </svg>
+
+  <script>
+    let box = document.getElementById('box');
+
+    function createParticles() {
+      let particle = document.createElement('div');
+      particle.classList.add('particle');
+
+      let angle = Math.random() * 2 * Math.PI;
+      let distance = 150 + Math.random() * 100;
+
+      let dx = Math.cos(angle) * distance + 'px';
+      let dy = Math.sin(angle) * distance + 'px';
+
+      particle.style.setProperty('--dx', dx)
+      particle.style.setProperty('--dy', dy)
+
+      particle.style.left = '50%';
+      particle.style.top = '50%';
+      particle.style.transform = 'transform(-50%, -50%)';
+
+      box.appendChild(particle);
+      setTimeout(() => {
+        particle.remove();
+      }, 2000);
+    }
+
+    setInterval(() => {
+      for (let i = 0; i < 3; i++) {
+        createParticles();
+      }
+    }, 100);
+  </script>
+</body>
+
+</html>
